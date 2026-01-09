@@ -1,0 +1,170 @@
+{{- define "main" }}
+
+<article class="home-portfolio">
+  {{/* Full Screen Hero with Background Image */}}
+  <section class="hero-fullscreen" {{ with .Params.background_image }}style="background-image: url('{{ . }}');"{{ end }}>
+    {{/* Dark Overlay */}}
+    <div class="hero-overlay"></div>
+    
+    {{/* Content on top */}}
+    <div class="hero-content">
+      {{ with .Params.profile_image }}
+      <div class="hero-profile">
+        <img src="{{ . }}" alt="Profile" class="profile-img">
+      </div>
+      {{ end }}
+      
+      <div class="hero-text">
+        <h1 class="hero-title">{{ .Title }}</h1>
+        {{ with .Params.subtitle }}
+        <p class="hero-subtitle">{{ . }}</p>
+        {{ end }}
+        <div class="hero-description">
+          {{ .Content }}
+        </div>
+      </div>
+    </div>
+  </section>
+</article>
+
+<style>
+.home-portfolio {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: calc(-1.5 * var(--header-height));
+}
+
+.hero-fullscreen {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--header-height);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.hero-profile {
+  margin-bottom: 2rem;
+}
+
+.profile-img {
+  width: min(35vw, 400px);
+  height: min(35vw, 400px);
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  object-fit: cover;
+  border: 6px solid rgba(255,255,255,0.65);
+}
+
+.hero-text {
+  max-width: 700px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  color: white;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 1), 0 0 40px rgba(0, 0, 0, 0.9), 0 0 60px rgba(0, 0, 0, 0.7);
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  opacity: 0.95;
+  margin-bottom: 1.5rem;
+  color: white;
+  text-shadow: 0 3px 15px rgba(0, 0, 0, 1), 0 0 30px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 0, 0, 0.7);
+}
+
+.hero-description {
+  font-size: 1.3rem;
+  line-height: 1.7;
+  opacity: 0.95;
+  color: white;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 1), 0 0 25px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.7);
+}
+
+.hero-description p {
+  color: white;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 1), 0 0 25px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.7);
+}
+
+/* Landscape layout: image on right, text on left */
+@media (orientation: landscape) and (min-width: 768px) {
+  .hero-content {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+    text-align: left;
+  }
+  
+  .hero-profile {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .hero-text {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-fullscreen {
+    background-attachment: scroll;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .profile-img {
+    width: min(40vw, 200px);
+    height: min(40vw, 200px);
+  }
+  
+  .hero-content {
+    padding: 2rem 1.5rem;
+  }
+}
+</style>
+
+{{- end }}

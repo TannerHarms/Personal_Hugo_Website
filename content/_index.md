@@ -1,14 +1,10 @@
 ---
-title: "Home"
+title: "Your Name"
+subtitle: "Researcher | Engineer | Photographer"
+profile_image: "/images/home/ProfileImage.JPG"
+background_image: "/images/home/FrontPageBackground.JPG"
 ---
 
-# Welcome to My Personal Website
+Welcome to my personal website. I'm passionate about [your field/interests]. 
 
-Hi! I'm [Your Name], and this is my personal space on the web.
-
-Here you'll find:
-- My **[CV](/cv/)** with professional experience and education
-- A **[Gallery](/gallery/)** of my work and projects
-- My **[Blog](/posts/)** with thoughts and updates
-
-Feel free to explore and get in touch!
+Explore my work, research, and photography through the navigation above.
