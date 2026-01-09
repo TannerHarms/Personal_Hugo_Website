@@ -1,0 +1,264 @@
+{{ define "header" }}
+  {{ partials.Include "page-header.html" . }}
+{{ end }}
+
+{{ define "main" }}
+  <article class="mw8 center ph3">
+    <header class="mt4 w-100">
+      <h1 class="f1 athelas mt3 mb1">{{ .Title }}</h1>
+    </header>
+
+    <section class="lh-copy f4 mid-gray mt4">
+      {{ .Content }}
+    </section>
+
+    {{/* Tag Filter */}}
+    {{ if .Params.gallery_items }}
+    <div class="filter-container mt4 mb3">
+      <label for="tag-filter" class="f5 b mr2">Filter by tag:</label>
+      <select id="tag-filter" class="pa2 br2 ba b--moon-gray">
+        <option value="all">All Images</option>
+      </select>
+    </div>
+
+    {{/* Gallery Grid */}}
+    <section class="gallery-justified mt5 mb5">
+      {{ range .Params.gallery_items }}
+      <div class="gallery-item" data-image="{{ .image }}" data-tags="{{ delimit .tags "," }}">
+        <a href="{{ .image }}" class="db link">
+          <img src="{{ .image }}" alt="{{ .title }}" class="gallery-img">
+          <div class="gallery-overlay">
+            <h3 class="f4 white ma0 pa3">{{ .title }}</h3>
+            {{ with .description }}
+            <p class="f6 white-80 ma0 pa3 pt0">{{ . }}</p>
+            {{ end }}
+          </div>
+        </a>
+      </div>
+      {{ end }}
+    </section>
+    {{ end }}
+  </article>
+
+  <style>
+    .gallery-justified {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: fit-content;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+
+    .gallery-img {
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover .gallery-img {
+      transform: scale(1.05);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      color: white;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      transform: translateY(0);
+    }
+
+    .gallery-item.hidden {
+      display: none;
+    }
+
+    .filter-container {
+      display: flex;
+      align-items: center;
+    }
+
+    #tag-filter {
+      min-width: 200px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 640px) {
+      .gallery-item {
+        flex-basis: 100%;
+        min-width: 100%;
+      }
+      
+      .filter-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      #tag-filter {
+        margin-top: 0.5rem;
+        width: 100%;
+      }
+    }
+  </style>
+
+  <script>
+    // Dynamic layout based on image aspect ratios
+    document.addEventListener('DOMContentLoaded', function() {
+      const gallery = document.querySelector('.gallery-justified');
+      if (!gallery) return;
+      
+      const allItems = Array.from(gallery.querySelectorAll('.gallery-item'));
+      
+      // Populate tag filter dropdown
+      const tagFilter = document.getElementById('tag-filter');
+      const allTags = new Set();
+      
+      allItems.forEach(item => {
+        const tags = item.getAttribute('data-tags');
+        if (tags) {
+          tags.split(',').forEach(tag => allTags.add(tag.trim()));
+        }
+      });
+      
+      // Add tags to dropdown
+      Array.from(allTags).sort().forEach(tag => {
+        const option = document.createElement('option');
+        option.value = tag;
+        option.textContent = tag.charAt(0).toUpperCase() + tag.slice(1);
+        tagFilter.appendChild(option);
+      });
+      
+      // Filter functionality
+      tagFilter.addEventListener('change', function() {
+        const selectedTag = this.value;
+        
+        allItems.forEach(item => {
+          if (selectedTag === 'all') {
+            item.classList.remove('hidden');
+          } else {
+            const itemTags = item.getAttribute('data-tags').split(',').map(t => t.trim());
+            if (itemTags.includes(selectedTag)) {
+              item.classList.remove('hidden');
+            } else {
+              item.classList.add('hidden');
+            }
+          }
+        });
+        
+        // Re-layout visible images
+        layoutGallery();
+      });
+      
+      // Initial layout
+      layoutGallery();
+      
+      function layoutGallery() {
+        const items = Array.from(gallery.querySelectorAll('.gallery-item:not(.hidden)'));
+        
+        // Load images and calculate aspect ratios
+        Promise.all(items.map(item => {
+          return new Promise((resolve) => {
+            const img = item.querySelector('img');
+            if (img.complete) {
+              resolve({
+                element: item,
+                img: img,
+                width: img.naturalWidth,
+                height: img.naturalHeight,
+                aspectRatio: img.naturalWidth / img.naturalHeight
+              });
+            } else {
+              img.addEventListener('load', () => {
+                resolve({
+                  element: item,
+                  img: img,
+                  width: img.naturalWidth,
+                  height: img.naturalHeight,
+                  aspectRatio: img.naturalWidth / img.naturalHeight
+                });
+              });
+            }
+          });
+        })).then(imageData => {
+          // Target height for each row - limit to 60% of viewport height
+          const viewportHeight = window.innerHeight;
+          const targetHeight = Math.min(350, viewportHeight * 0.6);
+          
+          // Organize images into rows based on aspect ratios
+          const rows = [];
+          let currentRow = [];
+          let currentRowWidth = 0;
+          const containerWidth = gallery.offsetWidth;
+          
+          imageData.forEach((data, index) => {
+            const aspectRatio = data.aspectRatio;
+            const imageWidth = targetHeight * aspectRatio;
+            
+            // Check if adding this image would overflow the row or exceed 3 images
+            if (currentRow.length > 0 && 
+                (currentRowWidth + imageWidth > containerWidth * 2.5 || currentRow.length >= 3)) {
+              rows.push(currentRow);
+              currentRow = [];
+              currentRowWidth = 0;
+            }
+            
+            currentRow.push(data);
+            currentRowWidth += imageWidth;
+            
+            // Push last row if this is the last image
+            if (index === imageData.length - 1) {
+              rows.push(currentRow);
+            }
+          });
+          
+          // Apply sizing to items based on their row
+          rows.forEach(row => {
+            // Get computed gap size
+            const computedStyle = window.getComputedStyle(gallery);
+            const gapSize = parseFloat(computedStyle.gap) || 16;
+            const totalGapWidth = (row.length - 1) * gapSize;
+            const availableWidth = containerWidth - totalGapWidth;
+            
+            // Calculate total width if all images were at target height
+            const totalWidth = row.reduce((sum, item) => sum + (targetHeight * item.aspectRatio), 0);
+            
+            // Calculate actual height to make the row fill available width exactly
+            let actualHeight = (availableWidth / totalWidth) * targetHeight;
+            
+            // Limit to maximum 70% of viewport height
+            const maxHeight = viewportHeight * 0.7;
+            actualHeight = Math.min(actualHeight, maxHeight);
+            
+            row.forEach(item => {
+              // Set height on both the container and image
+              item.element.style.height = actualHeight + 'px';
+              item.img.style.height = actualHeight + 'px';
+              item.img.style.width = 'auto';
+              item.img.style.maxWidth = 'none';
+            });
+          });
+        });
+      }
+    });
+  </script>
+{{ end }}
