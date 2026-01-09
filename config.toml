@@ -1,34 +1,36 @@
 baseURL = 'http://example.org/'
 languageCode = 'en-us'
-title = 'My Personal Website'
-theme = 'ananke'
+title = 'Tanner Harms'
+theme = 'PaperMod'
 
 [params]
-  description = "My personal website with CV and gallery"
-  author = "Your Name"
+  description = "Personal website - Research, Photography, and More"
+  author = "Tanner D. Harms"
   ShowReadingTime = true
   ShowShareButtons = false
   ShowPostNavLinks = true
   ShowBreadCrumbs = true
-  ShowCodeCopyButtons = true
-  ShowWordCount = true
+  ShowCodeCopyButtons = false
+  
+[[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/yourusername"
+
+[[params.socialIcons]]
+  name = "email"
+  url = "mailto:your@email.com"
 
 [[menu.main]]
-  name = "Home"
-  url = "/"
+  name = "About"
+  url = "/cv/"
   weight = 1
 
 [[menu.main]]
-  name = "CV"
-  url = "/cv/"
+  name = "Research"
+  url = "/posts/"
   weight = 2
 
 [[menu.main]]
-  name = "Gallery"
+  name = "Photography"
   url = "/gallery/"
   weight = 3
-
-[[menu.main]]
-  name = "Blog"
-  url = "/posts/"
-  weight = 4

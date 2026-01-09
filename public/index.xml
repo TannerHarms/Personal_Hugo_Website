@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Home on My Personal Website</title>
-    <link>http://localhost:1313/</link>
-    <description>Recent content in Home on My Personal Website</description>
-    <generator>Hugo</generator>
+    <title>Your Name on Tanner Harms</title>
+    <link>http://localhost:61601/</link>
+    <description>Recent content in Your Name on Tanner Harms</description>
+    <generator>Hugo -- 0.154.3</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 09 Jan 2026 06:25:30 -0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:61601/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Curriculum Vitae</title>
-      <link>http://localhost:1313/cv/</link>
+      <link>http://localhost:61601/cv/</link>
       <pubDate>Fri, 09 Jan 2026 06:25:30 -0800</pubDate>
-      <guid>http://localhost:1313/cv/</guid>
-      <description>&lt;h2 id=&#34;education&#34;&gt;Education&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;Your University&lt;/strong&gt; - Degree Name (Year)&lt;/p&gt;&#xA;&lt;h2 id=&#34;experience&#34;&gt;Experience&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;Job Title&lt;/strong&gt; - Company Name (Dates)&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Key achievement or responsibility&lt;/li&gt;&#xA;&lt;li&gt;Another achievement&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;skills&#34;&gt;Skills&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Skill 1&lt;/li&gt;&#xA;&lt;li&gt;Skill 2&lt;/li&gt;&#xA;&lt;li&gt;Skill 3&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
+      <guid>http://localhost:61601/cv/</guid>
+      <description>&lt;h2 id=&#34;education&#34;&gt;Education&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Your University&lt;/strong&gt; - Degree Name (Year)&lt;/p&gt;
+&lt;h2 id=&#34;experience&#34;&gt;Experience&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Job Title&lt;/strong&gt; - Company Name (Dates)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Key achievement or responsibility&lt;/li&gt;
+&lt;li&gt;Another achievement&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;skills&#34;&gt;Skills&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Skill 1&lt;/li&gt;
+&lt;li&gt;Skill 2&lt;/li&gt;
+&lt;li&gt;Skill 3&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     <item>
       <title>Gallery</title>
-      <link>http://localhost:1313/gallery/</link>
+      <link>http://localhost:61601/gallery/</link>
       <pubDate>Fri, 09 Jan 2026 06:25:30 -0800</pubDate>
-      <guid>http://localhost:1313/gallery/</guid>
-      <description>&lt;p&gt;Welcome to my gallery! Here&amp;rsquo;s a showcase of my work and projects.&lt;/p&gt;&#xA;&lt;h2 id=&#34;featured-projects&#34;&gt;Featured Projects&lt;/h2&gt;&#xA;&lt;p&gt;Hover over each item to see more details. Click to view full size.&lt;/p&gt;</description>
+      <guid>http://localhost:61601/gallery/</guid>
+      <description>&lt;p&gt;Welcome to my gallery! Here&amp;rsquo;s a showcase of my work and projects.&lt;/p&gt;
+&lt;h2 id=&#34;featured-projects&#34;&gt;Featured Projects&lt;/h2&gt;
+&lt;p&gt;Hover over each item to see more details. Click to view full size.&lt;/p&gt;</description>
     </item>
     <item>
       <title>My First Post</title>
-      <link>http://localhost:1313/posts/my-first-post/</link>
+      <link>http://localhost:61601/posts/my-first-post/</link>
       <pubDate>Fri, 09 Jan 2026 06:25:30 -0800</pubDate>
-      <guid>http://localhost:1313/posts/my-first-post/</guid>
+      <guid>http://localhost:61601/posts/my-first-post/</guid>
       <description></description>
     </item>
   </channel>
