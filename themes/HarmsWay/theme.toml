@@ -1,0 +1,17 @@
+name = "HarmsWay"
+license = "MIT"
+licenselink = "https://github.com/tannerharms/HarmsWay/blob/main/LICENSE"
+description = "A custom Hugo theme built on PaperMod, featuring full-screen hero sections, trapezoid content blocks, and modern portfolio design"
+homepage = "https://github.com/tannerharms/HarmsWay"
+tags = ["blog", "portfolio", "minimal", "responsive", "personal"]
+features = ["responsive", "customizable", "hero-section", "trapezoid-blocks", "dark-mode"]
+min_version = "0.112.0"
+
+[author]
+  name = "Tanner D. Harms"
+  homepage = "https://tannerharms.com"
+
+[original]
+  name = "PaperMod"
+  homepage = "https://github.com/adityatelange/hugo-PaperMod"
+  repo = "https://github.com/adityatelange/hugo-PaperMod"

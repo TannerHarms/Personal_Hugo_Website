@@ -1,0 +1,108 @@
+/* Custom color scheme */
+:root {
+  /* Light mode colors */
+  --theme: rgb(255, 255, 255);        /* Main background */
+  --entry: rgb(255, 255, 255);        /* Card/entry background */
+  --primary: rgb(30, 30, 30);         /* Main text color */
+  --secondary: rgb(108, 108, 108);    /* Secondary text */
+  --tertiary: rgb(214, 214, 214);     /* Borders, subtle elements */
+  --content: rgb(31, 31, 31);         /* Content text */
+  --code-bg: rgb(245, 245, 245);      /* Inline code background */
+  --border: rgb(238, 238, 238);       /* Border color */
+  --link-color: rgb(255, 255, 255);     /* Link color */
+  --link-hover: rgb(191, 87, 0);      /* Burnt orange for light mode */
+}
+
+:root[data-theme="dark"] {
+  /* Dark mode colors */
+  --theme: rgb(29, 30, 32);           /* Main background */
+  --entry: rgb(46, 46, 51);           /* Card/entry background */
+  --primary: rgb(218, 218, 219);      /* Main text color */
+  --secondary: rgb(155, 156, 157);    /* Secondary text */
+  --tertiary: rgb(65, 66, 68);        /* Borders, subtle elements */
+  --content: rgb(196, 196, 197);      /* Content text */
+  --code-bg: rgb(55, 56, 62);         /* Inline code background */
+  --border: rgb(51, 51, 51);          /* Border color */
+  --link-color: rgb(255, 255, 255);   /* Link color */
+  --link-hover: rgb(255, 140, 60);    /* Lighter burnt orange for dark mode */
+}
+
+/* Universal link styling */
+a:not(.link-button):not(.profile-img) {
+  color: var(--link-color);
+  transition: color 0.2s ease;
+}
+
+a:not(.link-button):not(.profile-img):hover {
+  color: var(--link-hover);
+}
+
+/* Custom typography enhancements - minimal overrides */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: "Athelas", Georgia, serif;
+}
+
+/* On home page - make body background transparent under header area */
+body:has(.header-transparent) {
+  background: transparent !important;
+}
+
+/* Add background to main content area only */
+body:has(.header-transparent) .main {
+  background: var(--theme);
+  margin-top: var(--header-height);
+}
+
+/* Transparent header on home page */
+.header-transparent {
+  --theme: rgba(0, 0, 0, 0.3) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
+}
+
+.header-transparent .nav {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Override all possible background sources */
+.header-transparent::before,
+.header-transparent::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Force transparency on all child elements */
+.header-transparent *:not(svg):not(path):not(line):not(circle) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+body.home .main {
+  padding-top: 0;
+}
+
+/* Home page specific styles */
+.home-page .about-section, 
+.home-page .research-section, 
+.home-page .news-section, 
+.home-page .contact-section {
+  padding: 3rem 0;
+}
+
+.home-page img {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

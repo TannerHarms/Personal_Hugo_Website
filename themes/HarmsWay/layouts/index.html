@@ -1,0 +1,580 @@
+{{- define "main" }}
+
+<article class="home-portfolio">
+  {{/* Full Screen Hero with Background Image */}}
+  <section class="hero-fullscreen" {{ with .Params.background_image }}style="background-image: url('{{ . }}');"{{ end }}>
+    {{/* Dark Overlay */}}
+    <div class="hero-overlay"></div>
+    
+    {{/* Content on top */}}
+    <div class="hero-content">
+      {{ with .Params.profile_image }}
+      <div class="hero-profile">
+        <img src="{{ . }}" alt="Profile" class="profile-img">
+      </div>
+      {{ end }}
+      
+      <div class="hero-text">
+        <h1 class="hero-title">{{ .Title }}</h1>
+        {{ with .Params.subtitle }}
+        <p class="hero-subtitle">{{ . }}</p>
+        {{ end }}
+        <div class="hero-description">
+          {{ .Content }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content with Sidebar Layout -->
+  <div class="content-with-sidebar">
+    <!-- Full Width Content Blocks -->
+    <div class="full-width-content">
+      {{/* Quick Links Section */}}
+      <section class="content-block quick-links-section">
+        <div class="content-container">
+          <h2 class="section-title">Explore My Work</h2>
+          <div class="button-grid">
+            {{- range site.Menus.main }}
+            <a href="{{ .URL | absLangURL }}" class="link-button">
+              <span class="button-text">{{ .Name }}</span>
+            </a>
+            {{- end }}
+          </div>
+        </div>
+      </section>
+
+      <!-- About Me Block -->
+  <section class="content-block about-section">
+    <div class="content-container">
+      <h2 class="section-title">About Me</h2>
+      <div class="section-content">
+        <p>Hello! I'm Tanner Harms, an analyst, scientist, and engineer passionate about research, data, and creative problem solving. My work spans multiple disciplines, and I enjoy sharing my journey and insights here.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Research Block -->
+  <section class="content-block research-section">
+    <div class="content-container">
+      <h2 class="section-title">Research</h2>
+      <div class="section-content">
+        <p>My research interests include data science, engineering, and interdisciplinary projects. I focus on applying analytical methods to real-world challenges and advancing knowledge in my fields of interest.</p>
+        <a href="/research/" class="link-button">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent News Block -->
+  <section class="content-block news-section">
+    <div class="content-container">
+      <h2 class="section-title">Recent News</h2>
+      <div class="section-content">
+        <ul class="news-list">
+          {{ range first 3 (where site.RegularPages "Section" "posts") }}
+            <li>
+              <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+              <span class="news-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+            </li>
+          {{ else }}
+            <li>No recent news yet. Check back soon!</li>
+          {{ end }}
+        </ul>
+      </div>
+    </div>
+  </section>
+    </div>
+
+    <!-- Overlaid Sidebar -->
+    <aside class="sidebar-overlay">
+      <div class="sidebar-sticky">
+        <!-- Highlights Section -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Highlights</h3>
+          <ul class="highlights-list">
+            {{ with site.Params.highlights }}
+              {{ range . }}
+                <li class="highlight-item">
+                  <span class="highlight-icon">{{ .icon | default "▪" }}</span>
+                  <div class="highlight-content">
+                    {{ if .url }}
+                      <a href="{{ .url }}">{{ .text }}</a>
+                    {{ else }}
+                      {{ .text }}
+                    {{ end }}
+                  </div>
+                </li>
+              {{ end }}
+            {{ else }}
+              <li class="highlight-item">
+                <span class="highlight-icon">🎓</span>
+                <div class="highlight-content">Add highlights in config.toml</div>
+              </li>
+            {{ end }}
+          </ul>
+        </div>
+
+        <!-- Recent Posts -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Recent Posts</h3>
+          <ul class="sidebar-posts">
+            {{ $result := try (resources.GetRemote "https://tannerharms.substack.com/feed") }}
+            {{ with $result.Value }}
+              {{ $feed := . | transform.Unmarshal }}
+              {{ range first 5 $feed.channel.item }}
+                <li>
+                  <a href="{{ .link }}" target="_blank" rel="noopener">{{ .title }}</a>
+                  <span class="post-date">{{ dateFormat "Jan 2" .pubDate }}</span>
+                </li>
+              {{ end }}
+            {{ else }}
+              <li>
+                <a href="https://tannerharms.substack.com/" target="_blank" rel="noopener">View posts on Substack →</a>
+              </li>
+            {{ end }}
+          </ul>
+          <div class="view-all-posts">
+            <a href="https://tannerharms.substack.com/" target="_blank" rel="noopener">View all posts on Substack →</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</article>
+
+<style>
+.home-portfolio {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: calc(-1.5 * var(--header-height));
+}
+
+.hero-fullscreen {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--header-height);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.hero-profile {
+  margin-bottom: 2rem;
+}
+
+.profile-img {
+  width: min(35vw, 400px);
+  height: min(35vw, 400px);
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  object-fit: cover;
+  border: 6px solid rgba(255,255,255,0.65);
+}
+
+.hero-text {
+  max-width: 700px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  color: white;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 1), 0 0 40px rgba(0, 0, 0, 0.9), 0 0 60px rgba(0, 0, 0, 0.7);
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  opacity: 0.95;
+  margin-bottom: 1.5rem;
+  color: white;
+  text-shadow: 0 3px 15px rgba(0, 0, 0, 1), 0 0 30px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 0, 0, 0.7);
+}
+
+.hero-description {
+  font-size: 1.3rem;
+  line-height: 1.7;
+  opacity: 0.95;
+  color: white;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 1), 0 0 25px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.7);
+}
+
+.hero-description p {
+  color: white;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 1), 0 0 25px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.7);
+}
+
+/* Landscape layout: image on right, text on left */
+@media (orientation: landscape) and (min-width: 768px) {
+  .hero-content {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+    text-align: left;
+  }
+  
+  .hero-profile {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .hero-text {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-fullscreen {
+    background-attachment: scroll;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .profile-img {
+    width: min(40vw, 200px);
+    height: min(40vw, 200px);
+  }
+  
+  .hero-content {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Content blocks below hero */
+.content-block {
+  background: var(--theme);
+  padding: 4rem 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+.content-container {
+  max-width: calc(100% - 450px); /* Leave space for sidebar (350px + margins) */
+  margin: 0;
+  margin-left: 3rem;
+  margin-right: auto;
+  padding-right: 2rem; /* Extra padding away from sidebar */
+}
+
+/* Sections below sidebar should expand to full width */
+.news-section .content-container {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Sidebar Layout - Overlay Design */
+.content-with-sidebar {
+  position: relative;
+  width: 100%;
+}
+
+.full-width-content {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar-overlay {
+  position: absolute;
+  right: 2rem;
+  top: 3rem; /* Starts below hero */
+  width: 350px;
+  z-index: 100;
+}
+
+.sidebar-sticky {
+  position: sticky;
+  top: calc(var(--header-height) + 2rem);
+  padding: 2rem;
+  background: var(--entry);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-section {
+  margin-bottom: 2rem;
+}
+
+.sidebar-section:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 0.5rem;
+}
+
+.highlights-list,
+.sidebar-posts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.highlight-item {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: var(--theme);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.highlight-item:hover {
+  transform: translateX(4px);
+}
+
+.highlight-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.highlight-content {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.sidebar-posts li {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-posts li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sidebar-posts a {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.post-date {
+  font-size: 0.875rem;
+  color: var(--secondary);
+  opacity: 0.7;
+}
+
+.view-all-posts {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.view-all-posts a {
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* Stack sidebar on mobile */
+@media (max-width: 1024px) {
+  .sidebar-overlay {
+    position: static;
+    width: 100%;
+    max-width: 600px;
+    margin: 2rem auto;
+    right: auto;
+    top: auto;
+  }
+  
+  .sidebar-sticky {
+    position: static;
+  }
+  
+  .content-container {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
+/* Extra wide content on large landscape screens */
+@media (min-width: 1400px) and (orientation: landscape) {
+  .content-container {
+    max-width: 1600px;
+  }
+  
+  .content-with-sidebar {
+    max-width: 1800px;
+  }
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--primary);
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.link-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: var(--primary);
+  color: var(--theme);
+  text-decoration: none;
+  border-radius: 12px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-height: 120px;
+}
+
+.link-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  background: var(--secondary);
+}
+
+.button-text {
+  text-align: center;
+}
+
+/* Alternate block backgrounds with Trapezoid Shapes */
+:root {
+  --angle-h: 4vw; /* Controls the angle height */
+}
+
+.content-block {
+  position: relative;
+  /* Negative margin pulls blocks together to create seamless overlap */
+  margin-top: calc(var(--angle-h) * -1);
+  /* Extra padding prevents content from being clipped */
+  padding: calc(2.5rem + var(--angle-h)) 2rem calc(2.5rem + var(--angle-h)) 2rem;
+}
+
+/* --- Alternating Trapezoids --- */
+
+/* 1. Quick Links (First Block) - Bottom slants down \ */
+.quick-links-section {
+  background: var(--theme);
+  margin-top: 0;
+  padding-top: 2.5rem;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--angle-h)),
+    0 100%
+  );
+}
+
+/* 2. About Me (Second Block) - Bottom slants down / */
+.about-section {
+  background: var(--entry);
+  clip-path: polygon(
+    0 var(--angle-h),
+    100% 0,
+    100% 100%,
+    0 calc(100% - var(--angle-h))
+  );
+}
+
+/* 3. Research (Third Block) - Bottom slants down \ */
+.research-section {
+  background: var(--theme);
+  clip-path: polygon(
+    0 0,
+    100% var(--angle-h),
+    100% calc(100% - var(--angle-h)),
+    0 100%
+  );
+}
+
+/* 4. News (Last Block) - Flat bottom */
+.news-section {
+  background: var(--tertiary);
+  clip-path: polygon(
+    0 var(--angle-h),
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+  padding-bottom: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .content-block {
+    padding: 3rem 1.5rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .button-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .link-button {
+    padding: 1.5rem 1rem;
+    font-size: 1.1rem;
+  }
+}
+</style>
+
+{{- end }}
