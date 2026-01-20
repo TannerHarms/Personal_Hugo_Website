@@ -25,6 +25,150 @@
       </div>
     </div>
   </section>
+
+  <!-- Main Content with Sidebar Layout -->
+  <div class="content-with-sidebar">
+    <!-- Sidebar Background Column -->
+    <div class="sidebar-background"></div>
+    
+    <!-- Full Width Content Blocks -->
+    <div class="full-width-content">
+      {{- $sections := .Params.sections -}}
+      {{- range $index, $section := $sections -}}
+      {{- $sectionNum := add $index 1 -}}
+      {{- $bgClass := cond (eq (mod $sectionNum 2) 0) "section-light" "section-dark" -}}
+      
+      {{/* type adds a class like 'section-about' for custom styling if needed */}}
+      <section class="content-block section-{{ $section.type }} {{ $bgClass }}">
+        <div class="content-container">
+          <h2 class="section-title">{{ $section.title }}</h2>
+          {{- if $section.subtitle -}}
+            <p class="section-subtitle">{{ $section.subtitle }}</p>
+          {{- end -}}
+          <div class="section-content">
+            {{- if eq $section.type "news" -}}
+              <ul class="news-list">
+                {{- if $section.items -}}
+                  {{/* Custom news items from front matter */}}
+                  {{- range $section.items -}}
+                    <li class="news-item">
+                      <div class="news-text">
+                        {{- if .url -}}
+                          <a href="{{ .url }}">{{ .title }}</a>
+                        {{- else -}}
+                          <span class="news-title">{{ .title }}</span>
+                        {{- end -}}
+                        {{- if .date -}}
+                          <span class="news-date">{{ .date }}</span>
+                        {{- end -}}
+                      </div>
+                      {{- if .image -}}
+                        <div class="news-media">
+                          <img src="{{ .image }}" alt="{{ .title }}" loading="lazy">
+                        </div>
+                      {{- end -}}
+                      {{- if .video -}}
+                        <div class="news-media news-video">
+                          {{- if hasPrefix .video "http" -}}
+                            {{/* Embedded video iframe */}}
+                            <div class="video-embed">
+                              <iframe src="{{ .video }}" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                          {{- else -}}
+                            {{/* Local video file */}}
+                            <video controls>
+                              <source src="{{ .video }}" type="video/mp4">
+                              Your browser does not support the video tag.
+                            </video>
+                          {{- end -}}
+                        </div>
+                      {{- end -}}
+                      {{- if .description -}}
+                        <p class="news-description">{{ .description }}</p>
+                      {{- end -}}
+                    </li>
+                  {{- end -}}
+                {{- else -}}
+                  {{/* Fallback to posts from content */}}
+                  {{ range first 3 (where site.RegularPages "Section" "posts") }}
+                    <li>
+                      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                      <span class="news-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+                    </li>
+                  {{ else }}
+                    <li>No recent news yet. Check back soon!</li>
+                  {{ end }}
+                {{- end -}}
+              </ul>
+            {{- else -}}
+              {{- if $section.content -}}
+                <p>{{ $section.content }}</p>
+              {{- end -}}
+              {{- with $section.button -}}
+                <a href="{{ .url }}" class="link-button">{{ .text }}</a>
+              {{- end -}}
+            {{- end -}}
+          </div>
+        </div>
+      </section>
+      {{- end -}}
+    </div>
+
+    <!-- Overlaid Sidebar -->
+    <aside class="sidebar-overlay">
+      <div class="sidebar-sticky">
+        <!-- Highlights Section -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Highlights</h3>
+          <ul class="highlights-list">
+            {{ with site.Params.highlights }}
+              {{ range . }}
+                <li class="highlight-item">
+                  <span class="highlight-icon">{{ .icon | default "▪" }}</span>
+                  <div class="highlight-content">
+                    {{ if .url }}
+                      <a href="{{ .url }}">{{ .text }}</a>
+                    {{ else }}
+                      {{ .text }}
+                    {{ end }}
+                  </div>
+                </li>
+              {{ end }}
+            {{ else }}
+              <li class="highlight-item">
+                <span class="highlight-icon">🎓</span>
+                <div class="highlight-content">Add highlights in config.toml</div>
+              </li>
+            {{ end }}
+          </ul>
+        </div>
+
+        <!-- Recent Posts -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Recent Posts</h3>
+          <ul class="sidebar-posts">
+            {{ $result := try (resources.GetRemote "https://tannerharms.substack.com/feed") }}
+            {{ with $result.Value }}
+              {{ $feed := . | transform.Unmarshal }}
+              {{ range first 5 $feed.channel.item }}
+                <li>
+                  <a href="{{ .link }}" target="_blank" rel="noopener">{{ .title }}</a>
+                  <span class="post-date">{{ dateFormat "Jan 2" .pubDate }}</span>
+                </li>
+              {{ end }}
+            {{ else }}
+              <li>
+                <a href="https://tannerharms.substack.com/" target="_blank" rel="noopener">View posts on Substack →</a>
+              </li>
+            {{ end }}
+          </ul>
+          <div class="view-all-posts">
+            <a href="https://tannerharms.substack.com/" target="_blank" rel="noopener">View all posts on Substack →</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
 </article>
 
 <style>
@@ -163,6 +307,439 @@
   
   .hero-content {
     padding: 2rem 1.5rem;
+  }
+}
+
+/* Content blocks below hero */
+.content-block {
+  background: var(--theme);
+  padding: 4rem 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Thin black border below hero */
+.hero-fullscreen::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background-color: #000;
+  z-index: 3;
+}
+
+.content-container {
+  max-width: calc(100% - 400px); /* Leave space for sidebar background column */
+  margin: 0 auto 0 0;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.section-content {
+  max-width: 100%; /* Use full available width within container */
+}
+
+/* Sidebar Layout - Overlay Design */
+.content-with-sidebar {
+  position: relative;
+  width: 100%;
+  padding-bottom: 0;
+}
+
+/* Thin black border at bottom of content blocks */
+.content-with-sidebar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background-color: #000;
+  z-index: 100;
+}
+
+.sidebar-background {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 400px;
+  background: rgba(var(--entry-rgb, 128, 128, 128), 0.3);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.full-width-content {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar-overlay {
+  position: absolute;
+  right: 30px; /* Centered in 400px sidebar background, accounting for scrollbar */
+  top: 1.5rem; /* Starts below hero */
+  width: 350px;
+  z-index: 100;
+}
+
+.sidebar-sticky {
+  position: sticky;
+  top: calc(var(--header-height) + 2rem);
+  padding: 2rem;
+  background: var(--entry);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-section {
+  margin-bottom: 2rem;
+}
+
+.sidebar-section:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--primary);
+  border-bottom: 2px solid var(--tertiary);
+  padding-bottom: 0.5rem;
+}
+
+.highlights-list,
+.sidebar-posts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.highlight-item {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: var(--theme);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.highlight-item:hover {
+  transform: translateX(4px);
+}
+
+.highlight-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.highlight-content {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.sidebar-posts li {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-posts li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sidebar-posts a {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.post-date {
+  font-size: 0.875rem;
+  color: var(--secondary);
+  opacity: 0.7;
+}
+
+.view-all-posts {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--tertiary);
+  text-align: center;
+}
+
+.view-all-posts a {
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* Stack sidebar on mobile - inline between sections */
+@media (max-width: 1024px) {
+  .sidebar-background {
+    display: none;
+  }
+  
+  .sidebar-overlay {
+    position: static;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    right: auto;
+    top: auto;
+    /* Insert sidebar after first section as inline content */
+    order: 2;
+    background: var(--theme);
+    padding: 3rem 0;
+  }
+  
+  .sidebar-sticky {
+    position: static;
+    margin: 0 auto;
+    max-width: 600px;
+    background: var(--entry);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .content-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  .full-width-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Make first section appear first */
+  .full-width-content > .content-block:nth-child(1) {
+    order: 1;
+  }
+  
+  /* Remaining sections follow after sidebar */
+  .full-width-content > .content-block:nth-child(n+2) {
+    order: 3;
+  }
+}
+
+/* Extra wide content on large landscape screens */
+@media (min-width: 1400px) and (orientation: landscape) {
+  .content-container {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  color: var(--primary);
+  border-bottom: 3px solid var(--tertiary);
+  max-width: 100%;
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  color: var(--secondary);
+  margin-top: 0.0rem;
+
+  margin-bottom: 1.5rem;
+  max-width: 100%;
+  font-style: italic;
+}
+
+.section-content {
+  max-width: 100%; /* Use full available width within container */
+  padding-top: 0.0rem;
+}
+
+/* News list with media support */
+.news-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.news-item {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.news-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.news-media {
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.news-media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.news-media video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.video-embed {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.video-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.news-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.news-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.news-description {
+  color: var(--secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Alternate block backgrounds with Trapezoid Shapes */
+:root {
+  --angle-h: 4vw; /* Controls the angle height */
+}
+
+.content-block {
+  position: relative;
+  /* Negative margin pulls blocks together to create seamless overlap */
+  margin-top: calc(var(--angle-h) * -1);
+  /* Extra padding prevents content from being clipped */
+  padding: calc(2.5rem + var(--angle-h)) 2rem calc(4rem + var(--angle-h)) 2rem;
+}
+
+/* --- Alternating Trapezoids --- */
+
+/* Section color classes */
+.section-dark {
+  background: var(--theme);
+}
+
+.section-light {
+  background: var(--entry);
+}
+
+/* First section - flat top, bottom slants \ */
+.full-width-content > .content-block:nth-child(1) {
+  margin-top: 0;
+  padding-top: 4rem;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    0 calc(100% - var(--angle-h))
+  );
+}
+
+/* Second section - top slants \, bottom slants / */
+.full-width-content > .content-block:nth-child(2) {
+  clip-path: polygon(
+    0 0,
+    100% var(--angle-h),
+    100% calc(100% - var(--angle-h)),
+    0 100%
+  );
+}
+
+/* Third section - top slants /, bottom slants \ */
+.full-width-content > .content-block:nth-child(3) {
+  clip-path: polygon(
+    0 var(--angle-h),
+    100% 0,
+    100% 100%,
+    0 calc(100% - var(--angle-h))
+  );
+}
+
+/* Fourth section - top slants \, flat bottom */
+.full-width-content > .content-block:nth-child(4) {
+  clip-path: polygon(
+    0 0,
+    100% var(--angle-h),
+    100% 100%,
+    0 100%
+  );
+  padding-bottom: 4rem;
+  margin-bottom: 0;
+}
+
+/* Fifth section and beyond - flat bottom to meet footer */
+.full-width-content > .content-block:nth-child(5) {
+  clip-path: polygon(
+    0 var(--angle-h),
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+  padding-bottom: 4rem;
+  margin-bottom: 0;
+}
+
+/* Last child should always have flat bottom and maintain proper angle direction */
+.full-width-content > .content-block:last-child {
+  clip-path: polygon(
+    0 0,
+    100% var(--angle-h),
+    100% 100%,
+    0 100%
+  ) !important;
+  padding-bottom: 4rem;
+  margin-bottom: -2rem;
+}
+
+@media (max-width: 768px) {
+  .content-block {
+    padding: 3rem 1.5rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .button-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .link-button {
+    padding: 1.5rem 1rem;
+    font-size: 1.1rem;
   }
 }
 </style>

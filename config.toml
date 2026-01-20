@@ -1,7 +1,7 @@
 baseURL = 'http://example.org/'
 languageCode = 'en-us'
 title = 'Tanner Harms'
-theme = 'PaperMod'
+theme = 'HarmsWay'
 
 [params]
   description = "Personal website - Research, Photography, and More"
@@ -11,26 +11,62 @@ theme = 'PaperMod'
   ShowPostNavLinks = true
   ShowBreadCrumbs = true
   ShowCodeCopyButtons = false
+  disableThemeToggle = true
+
+[params.footer]
+  location = "Pasadena, California"
+  customText = "© 2026"
   
 [[params.socialIcons]]
   name = "github"
-  url = "https://github.com/yourusername"
+  url = "https://github.com/tannerharms"
+
+[[params.socialIcons]]
+  name = "linkedin"
+  url = "https://linkedin.com/in/your-profile"
 
 [[params.socialIcons]]
   name = "email"
-  url = "mailto:your@email.com"
+  url = "mailto:tanner@tannerharms.com"
+
+[[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 0
 
 [[menu.main]]
   name = "About"
-  url = "/cv/"
+  url = "/about/"
   weight = 1
 
 [[menu.main]]
   name = "Research"
-  url = "/posts/"
+  url = "/research/"
   weight = 2
+
+[[menu.main]]
+  name = "Writing"
+  url = "/writing/"
+  weight = 3
 
 [[menu.main]]
   name = "Photography"
   url = "/gallery/"
-  weight = 3
+  weight = 4
+
+# Footer menu
+[[menu.footer]]
+  name = "Home"
+  url = "/"
+  
+[[menu.footer]]
+  name = "About"
+  url = "/about/"
+  
+[[menu.footer]]
+  name = "Research"
+  url = "/research/"
+  
+[[menu.footer]]
+  name = "Photography"
+  url = "/gallery/"

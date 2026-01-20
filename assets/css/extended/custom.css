@@ -1,3 +1,42 @@
+/* Custom color scheme */
+:root {
+  /* Light mode colors */
+  --theme: rgb(255, 255, 255);        /* Main background */
+  --entry: rgb(255, 255, 255);        /* Card/entry background */
+  --primary: rgb(30, 30, 30);         /* Main text color */
+  --secondary: rgb(108, 108, 108);    /* Secondary text */
+  --tertiary: rgb(191, 87, 0);        /* Burnt orange accent color for light mode */
+  --content: rgb(31, 31, 31);         /* Content text */
+  --code-bg: rgb(245, 245, 245);      /* Inline code background */
+  --border: rgb(238, 238, 238);       /* Border color */
+  --link-color: rgb(255, 255, 255);   /* Link color */
+  --link-hover: rgb(191, 87, 0);      /* Burnt orange for light mode */
+}
+
+:root[data-theme="dark"] {
+  /* Dark mode colors */
+  --theme: rgb(29, 30, 32);           /* Main background */
+  --entry: rgb(46, 46, 51);           /* Card/entry background */
+  --primary: rgb(218, 218, 219);      /* Main text color */
+  --secondary: rgb(155, 156, 157);    /* Secondary text */
+  --tertiary: rgb(255, 140, 60);      /* Lighter burnt orange accent color for dark mode */
+  --content: rgb(196, 196, 197);      /* Content text */
+  --code-bg: rgb(55, 56, 62);         /* Inline code background */
+  --border: rgb(51, 51, 51);          /* Border color */
+  --link-color: rgb(255, 255, 255);   /* Link color */
+  --link-hover: rgb(255, 140, 60);    /* Lighter burnt orange for dark mode */
+}
+
+/* Universal link styling */
+a:not(.link-button):not(.profile-img) {
+  color: var(--link-color);
+  transition: color 0.2s ease;
+}
+
+a:not(.link-button):not(.profile-img):hover {
+  color: var(--link-hover);
+}
+
 /* Custom typography enhancements - minimal overrides */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
